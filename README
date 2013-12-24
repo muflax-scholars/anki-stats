@@ -43,4 +43,9 @@ $ end
 
 So we can estimate the decay_prob for all cards in the deck, and in particular show it for all the cards that are over-due, and compare it with their on-time prob. "You are forgetting this much more stuff by not studying today."
 
+Also show the difference in work:
+
+"remaining work over the next 5 years"
+"remaining work over the next 5 years if you *don't study today*"
+
 ]
