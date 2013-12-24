@@ -43,5 +43,23 @@ end
 cards = anki_db.execute("select id, type, queue, due, ivl, factor from cards")
 puts "#{cards.size} cards loaded."
 
+# cards without a history yet
+new_cards      = 0
+learning_cards = 0
+
 cards.each do |id, type, queue, due, ivl, factor|
+  case queue
+  when 0 # new
+    new_cards += 1
+  when 1 # learning
+    learning_cards += 1
+  when 2, -2, -3 # review queue or buried
+  when -1 # suspended
+    # don't care
+  else
+    # shouldn't happen
+  end
 end
+
+puts "#{new_cards} unreviewed new cards."
+puts "#{learning_cards} cards in learning queue (counting as unlearned)."
