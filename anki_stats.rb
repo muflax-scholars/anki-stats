@@ -18,11 +18,7 @@ def decay_prob days_since_last_review, last_interval, retention_rate
 end
 
 puts "opening #{AnkiFile}..."
-
-anki_db   = SQLite3::Database.new(File.expand_path(AnkiFile))
-
-stats = anki_db.execute("select id, cid, ease, factor, ivl, type from revlog")
-puts "#{stats.size} stats loaded."
+anki_db = SQLite3::Database.new(File.expand_path(AnkiFile))
 
 # due calculation:
 #
@@ -38,6 +34,8 @@ puts "#{stats.size} stats loaded."
 # - rev queue: integer day
 # - lrn queue: integer timestamp
 
+stats = anki_db.execute("select id, cid, ease, factor, ivl, type from revlog")
+puts "#{stats.size} stats loaded."
 
 stats.each do |id, cardId, ease, factor, ivl, type|
 end
