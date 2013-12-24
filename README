@@ -1,0 +1,46 @@
+Shows memory statistics, notably:
+
+- number of facts memorized
+- time invested
+- amount of stuff you're currently forgetting
+
+[ retention statistics
+
+Anki documentation:
+
+| For moderately difficult material, the average user should find they remember approximately 90% of mature cards that come up for review.
+|
+| ...
+|
+| On the SuperMemo website, they suggest that you can find an appropriate multiplier for a desired retention rate. Their formula boils down to:
+|
+| log(desired retention%) / log(current retention%)
+|
+| Imagine we have a current retention rate of 85% and we want to increase it to 90%. We’d calculate the modifier as:
+|
+| log(90%) / log(85%) = 0.65
+
+We could estimate the retention rate by simply getting all cards, and mapping their ease and progress to their retention rate, averaging it out, and then use that as a predictor.
+
+Simple math:
+
+Ease is fairly constant, especially over a deck, and as such not particularly informative. Instead, take the current interval of a card, take log_ease and round it to get its progress, and then take the median retention rate for cards of that level in all the statistics. That's the retention rate for the current card, and the probability you will know it if you study exactly on time.
+
+That is, at the time of the *last* review, the algorithm expected you to have forgotten $retention_rate of the facts by the time the interval had passed, and that process is (basically) exponential decay. So we know:
+
+$ n(t + interval) * 0.90 = n(t)
+$ n(t) = n_0 * e^(-lt)
+$ n(interval) = 0.90 * n_0 = n_0 * e^(-l * interval)
+$ n_0 = 1 -> n(interval) = 0.90 =  e^(-l * interval)
+$ -> ln(0.90) = -l * interval
+$ -> l = -ln(0.90) / interval ~= 1 / (10 * interval)
+
+thus:
+
+$ def decay_prob days_since_last_review, last_interval, retention_rate
+$   Math.exp((Math.log(retention_rate) / last_interval) * days_since_last_review)
+$ end
+
+So we can estimate the decay_prob for all cards in the deck, and in particular show it for all the cards that are over-due, and compare it with their on-time prob. "You are forgetting this much more stuff by not studying today."
+
+]
