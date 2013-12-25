@@ -6,10 +6,14 @@
 require "muflax"
 require "sqlite3"
 
-AnkiFile = "~/anki/muflax/collection.anki2"
+opts = Trollop::options do
+  opt :database, "which database to use", :type => :string
+end
+
+AnkiFile = File.expand_path(opts[:database])
 
 puts "opening #{AnkiFile}..."
-anki_db = SQLite3::Database.new(File.expand_path(AnkiFile))
+anki_db = SQLite3::Database.new(AnkiFile)
 
 DeckCreation = anki_db.get_first_row("select crt from col").first
 StartDate    = Date.strptime(DeckCreation.to_s, "%s")
