@@ -115,7 +115,7 @@ cards.each do |card|
   when 2, -2, -3 # review queue or buried
     review_cards += 1 if card.due?
 
-    [0, 1, 7, 30, 365].each do |i|
+    [0, 1, 7, 30, 365, 365*10].each do |i|
       if card.due? Today + i
         prob_diff = card.remember_prob(card.due_date) - card.remember_prob(Today + i)
 
@@ -140,23 +140,27 @@ puts
 puts "%.1f min already invested." % time_invested
 
 puts
-puts " %5.1f          min already wasted."                       %  time_wasted[0]
-puts "%6.1f (%+6.1f) min wasted if you don't study today."       % [time_wasted[1],
-                                                                    time_wasted[1]   - time_wasted[0]]
-puts "%6.1f (%+6.1f) min wasted if you don't study for a week."  % [time_wasted[7],
-                                                                    time_wasted[7]   - time_wasted[0]]
-puts "%6.1f (%+6.1f) min wasted if you don't study for a month." % [time_wasted[30],
-                                                                    time_wasted[30]  - time_wasted[0]]
-puts "%6.1f (%+6.1f) min wasted if you don't study for a year."  % [time_wasted[365],
-                                                                    time_wasted[365] - time_wasted[0]]
+puts " %6.1f           min already wasted."                         %  time_wasted[0]
+puts "%7.1f (%+7.1f) min wasted if you don't study today."         % [time_wasted[1],
+                                                                      time_wasted[1]    - time_wasted[0]]
+puts "%7.1f (%+7.1f) min wasted if you don't study for a week."    % [time_wasted[7],
+                                                                      time_wasted[7]    - time_wasted[0]]
+puts "%7.1f (%+7.1f) min wasted if you don't study for a month."   % [time_wasted[30],
+                                                                      time_wasted[30]   - time_wasted[0]]
+puts "%7.1f (%+7.1f) min wasted if you don't study for a year."    % [time_wasted[365],
+                                                                      time_wasted[365]  - time_wasted[0]]
+puts "%7.1f (%+7.1f) min wasted if you don't study for ten years." % [time_wasted[3650],
+                                                                      time_wasted[3650] - time_wasted[0]]
 
 puts
-puts " %5.1f          extra reviews already added."                  %  extra_reviews[0]
-puts "%+6.1f (%+6.1f) extra reviews if you don't study today."       % [extra_reviews[1],
-                                                                        extra_reviews[1]   - extra_reviews[0]]
-puts "%+6.1f (%+6.1f) extra reviews if you don't study for a week."  % [extra_reviews[7],
-                                                                        extra_reviews[7]   - extra_reviews[0]]
-puts "%+6.1f (%+6.1f) extra reviews if you don't study for a month." % [extra_reviews[30],
-                                                                        extra_reviews[30]  - extra_reviews[0]]
-puts "%+6.1f (%+6.1f) extra reviews if you don't study for a year."  % [extra_reviews[365],
-                                                                        extra_reviews[365] - extra_reviews[0]]
+puts " %6.1f           extra reviews already added."                    %  extra_reviews[0]
+puts "%+7.1f (%+7.1f) extra reviews if you don't study today."         % [extra_reviews[1],
+                                                                          extra_reviews[1]    - extra_reviews[0]]
+puts "%+7.1f (%+7.1f) extra reviews if you don't study for a week."    % [extra_reviews[7],
+                                                                          extra_reviews[7]    - extra_reviews[0]]
+puts "%+7.1f (%+7.1f) extra reviews if you don't study for a month."   % [extra_reviews[30],
+                                                                          extra_reviews[30]   - extra_reviews[0]]
+puts "%+7.1f (%+7.1f) extra reviews if you don't study for a year."    % [extra_reviews[365],
+                                                                          extra_reviews[365]  - extra_reviews[0]]
+puts "%+7.1f (%+7.1f) extra reviews if you don't study for ten years." % [extra_reviews[3650],
+                                                                          extra_reviews[3650] - extra_reviews[0]]
