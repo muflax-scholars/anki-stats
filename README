@@ -43,9 +43,14 @@ $ end
 
 So we can estimate the decay_prob for all cards in the deck, and in particular show it for all the cards that are over-due, and compare it with their on-time prob. "You are forgetting this much more stuff by not studying today."
 
-Also show the difference in work:
+Now we can show:
 
-"remaining work over the next 5 years"
-"remaining work over the next 5 years if you *don't study today*"
+- You paid X minutes and Y reviews to know learn this stuff so far. (Sunk cost.)
+
+- To still know it as well tomorrow / in a week / a month / a year / 10 years, you will have to pay an additional X minutes and Y reviews. (Maintenance cost.)
+
+- If you stop studying and want to get back to the current level tomorrow / ..., you will have to pay X/Y instead (+X/+Y more). (Laziness cost.)
+
+This makes it more meaningful to decide whether to study today or not, and what parts.
 
 ]

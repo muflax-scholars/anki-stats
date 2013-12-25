@@ -137,7 +137,10 @@ puts "#{review_cards} cards to review."
 puts "#{review_cards + learning_cards + new_cards} cards total to do."
 
 puts
-puts " %5.1f          min already wasted."                         %  time_wasted[0]
+puts "%.1f min already invested." % time_invested
+
+puts
+puts " %5.1f          min already wasted."                       %  time_wasted[0]
 puts "%6.1f (%+6.1f) min wasted if you don't study today."       % [time_wasted[1],
                                                                     time_wasted[1]   - time_wasted[0]]
 puts "%6.1f (%+6.1f) min wasted if you don't study for a week."  % [time_wasted[7],
@@ -148,7 +151,7 @@ puts "%6.1f (%+6.1f) min wasted if you don't study for a year."  % [time_wasted[
                                                                     time_wasted[365] - time_wasted[30]]
 
 puts
-puts " %5.1f          extra reviews already added."                 %  extra_reviews[0]
+puts " %5.1f          extra reviews already added."                  %  extra_reviews[0]
 puts "%+6.1f (%+6.1f) extra reviews if you don't study today."       % [extra_reviews[1],
                                                                         extra_reviews[1]   - extra_reviews[0]]
 puts "%+6.1f (%+6.1f) extra reviews if you don't study for a week."  % [extra_reviews[7],
