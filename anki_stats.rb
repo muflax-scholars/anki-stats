@@ -117,10 +117,8 @@ cards.each do |card|
     #    pm: card.remember_prob(30),
     #   ) if card.due?
 
-    if card.due?
-      [1, 7, 30, 365].each do |i|
-        work_wasted[i] += card.time * (card.remember_prob - card.remember_prob(i))
-      end
+    [1, 7, 30, 365].each do |i|
+      work_wasted[i] += card.time * (card.remember_prob - card.remember_prob(i)) if card.due? i
     end
   when -1 # suspended
     # don't care
