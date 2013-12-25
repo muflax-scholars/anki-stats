@@ -50,9 +50,9 @@ stats.each do |id, cardId, answer, factor, interval, type, time|
   AnswersByEase[ease] << (answer == 1 ? 0 : 1)
 end
 
-# use the average of the retention rates, but cap at 99%
+# use the average of the retention rates, but cap at 95%
 AnswersByEase.each do |ease, answers|
-  RetentionRate[ease] = [answers.average, 0.99].min
+  RetentionRate[ease] = [answers.average, 0.95].min
 end
 
 Card = Struct.new :id, :type, :queue, :due, :interval, :factor, :time do
@@ -94,6 +94,7 @@ puts "#{cards.size} cards loaded."
 # cards without a history yet
 new_cards      = 0
 learning_cards = 0
+review_cards   = 0
 
 work_wasted = vivaHash 0
 
@@ -104,8 +105,7 @@ cards.each do |card|
   when 1 # learning
     learning_cards += 1
   when 2, -2, -3 # review queue or buried
-    # ap retention_rate
-
+    review_cards += 1
 
     # ap(id: card.id,
     #    r: card.review_date,
@@ -128,6 +128,7 @@ end
 puts
 puts "#{new_cards} unreviewed new cards."
 puts "#{learning_cards} cards in learning queue (counting as unlearned)."
+puts "#{review_cards} cards to review."
 
 puts
 puts "%0.2f minutes of work wasted if you don't study today."       % (work_wasted[1]   / 60.0)
