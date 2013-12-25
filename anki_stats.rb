@@ -6,8 +6,6 @@
 require "muflax"
 require "sqlite3"
 
-AnswersByEase = vivaHash []
-RetentionRate = vivaHash 0.90
 AnkiFile = "~/anki/muflax/collection.anki2"
 
 puts "opening #{AnkiFile}..."
@@ -32,7 +30,9 @@ puts "deck started on #{StartDate}"
 # - rev queue: integer day
 # - lrn queue: integer timestamp
 
-TimeForCard = vivaHash 0
+TimeForCard   = vivaHash 0
+AnswersByEase = vivaHash []
+RetentionRate = {}
 
 stats = anki_db.execute("select id, cid, ease, factor, ivl, type, time from revlog")
 puts "#{stats.size} stats loaded."
@@ -72,14 +72,14 @@ Card = Struct.new :id, :type, :queue, :due, :interval, :factor, :time do
     due_date - interval
   end
 
-  def due? day=0
-    due_date <= Today+day
+  def due? day=Today
+    due_date <= day
   end
 
-  def remember_prob day=0
+  def remember_prob day=Today
     decay_rate = Math.log(retention_rate) / interval
 
-    prob = Math.exp(decay_rate * ((Today - review_date) + day))
+    prob = Math.exp(decay_rate * (day - review_date))
 
     prob
   end
@@ -112,9 +112,13 @@ cards.each do |card|
   when 2, -2, -3 # review queue or buried
     review_cards += 1 if card.due?
 
-    [1, 7, 30, 365].each do |i|
-      time_wasted[i]   += card.time * (card.remember_prob - card.remember_prob(i))  if card.due? i
-      extra_reviews[i] += card.stage * (card.remember_prob - card.remember_prob(i)) if card.due? i
+    [0, 1, 7, 30, 365].each do |i|
+      if card.due? Today + i
+        prob_diff = card.remember_prob(card.due_date) - card.remember_prob(Today + i)
+
+        time_wasted[i]   += card.time  * prob_diff
+        extra_reviews[i] += card.stage * prob_diff
+      end
     end
   when -1 # suspended
     # don't care
@@ -128,12 +132,14 @@ puts "#{review_cards} cards to review."
 puts "#{review_cards + learning_cards + new_cards} cards total to do."
 
 puts
+puts "%7.2f min already wasted."                        % (time_wasted[0]   / 60.0)
 puts "%7.2f min wasted if you don't study today."       % (time_wasted[1]   / 60.0)
 puts "%7.2f min wasted if you don't study for a week."  % (time_wasted[7]   / 60.0)
 puts "%7.2f min wasted if you don't study for a month." % (time_wasted[30]  / 60.0)
 puts "%7.2f min wasted if you don't study for a year."  % (time_wasted[365] / 60.0)
 
 puts
+puts "%5d extra reviews already added."                  % (extra_reviews[0].ceil)
 puts "%5d extra reviews if you don't study today."       % (extra_reviews[1].ceil)
 puts "%5d extra reviews if you don't study for a week."  % (extra_reviews[7].ceil)
 puts "%5d extra reviews if you don't study for a month." % (extra_reviews[30].ceil)
