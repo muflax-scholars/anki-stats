@@ -87,6 +87,10 @@ Card = Struct.new :id, :type, :queue, :due, :interval, :factor, :time do
   def time
     TimeForCard[id]
   end
+
+  def stage
+    Math.log(interval, ease / 10.0).round
+  end
 end
 cards = anki_db.execute("select id, type, queue, due, ivl, factor from cards").map{|c| Card.new(*c)}
 puts "#{cards.size} cards loaded."
@@ -96,7 +100,8 @@ new_cards      = 0
 learning_cards = 0
 review_cards   = 0
 
-work_wasted = vivaHash 0
+time_wasted   = vivaHash 0
+extra_reviews = vivaHash 0
 
 cards.each do |card|
   case card.queue
@@ -105,20 +110,11 @@ cards.each do |card|
   when 1 # learning
     learning_cards += 1
   when 2, -2, -3 # review queue or buried
-    review_cards += 1
-
-    # ap(id: card.id,
-    #    r: card.review_date,
-    #    i: card.interval,
-    #    due: card.due_date,
-    #    p: card.remember_prob,
-    #    pt: card.remember_prob(1),
-    #    pw: card.remember_prob(7),
-    #    pm: card.remember_prob(30),
-    #   ) if card.due?
+    review_cards += 1 if card.due?
 
     [1, 7, 30, 365].each do |i|
-      work_wasted[i] += card.time * (card.remember_prob - card.remember_prob(i)) if card.due? i
+      time_wasted[i]   += card.time * (card.remember_prob - card.remember_prob(i))  if card.due? i
+      extra_reviews[i] += card.stage * (card.remember_prob - card.remember_prob(i)) if card.due? i
     end
   when -1 # suspended
     # don't care
@@ -129,9 +125,16 @@ puts
 puts "#{new_cards} unreviewed new cards."
 puts "#{learning_cards} cards in learning queue (counting as unlearned)."
 puts "#{review_cards} cards to review."
+puts "#{review_cards + learning_cards + new_cards} cards total to do."
 
 puts
-puts "%0.2f minutes of work wasted if you don't study today."       % (work_wasted[1]   / 60.0)
-puts "%0.2f minutes of work wasted if you don't study for a week."  % (work_wasted[7]   / 60.0)
-puts "%0.2f minutes of work wasted if you don't study for a month." % (work_wasted[30]  / 60.0)
-puts "%0.2f minutes of work wasted if you don't study for a year."  % (work_wasted[365] / 60.0)
+puts "%7.2f min wasted if you don't study today."       % (time_wasted[1]   / 60.0)
+puts "%7.2f min wasted if you don't study for a week."  % (time_wasted[7]   / 60.0)
+puts "%7.2f min wasted if you don't study for a month." % (time_wasted[30]  / 60.0)
+puts "%7.2f min wasted if you don't study for a year."  % (time_wasted[365] / 60.0)
+
+puts
+puts "%5d extra reviews if you don't study today."       % (extra_reviews[1].ceil)
+puts "%5d extra reviews if you don't study for a week."  % (extra_reviews[7].ceil)
+puts "%5d extra reviews if you don't study for a month." % (extra_reviews[30].ceil)
+puts "%5d extra reviews if you don't study for a year."  % (extra_reviews[365].ceil)
