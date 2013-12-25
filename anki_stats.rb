@@ -100,8 +100,9 @@ new_cards      = 0
 learning_cards = 0
 review_cards   = 0
 
-time_wasted   = vivaHash 0
-extra_reviews = vivaHash 0
+time_wasted     = vivaHash 0
+extra_reviews   = vivaHash 0
+facts_forgotten = vivaHash 0
 
 cards.each do |card|
   case card.queue
@@ -116,8 +117,9 @@ cards.each do |card|
       if card.due? Today + i
         prob_diff = card.remember_prob(card.due_date) - card.remember_prob(Today + i)
 
-        time_wasted[i]   += card.time  * prob_diff
-        extra_reviews[i] += card.stage * prob_diff
+        time_wasted[i]     += card.time  * prob_diff
+        extra_reviews[i]   += card.stage * prob_diff
+        facts_forgotten[i] += prob_diff
       end
     end
   when -1 # suspended
@@ -144,3 +146,10 @@ puts "%5d extra reviews if you don't study today."       % (extra_reviews[1].cei
 puts "%5d extra reviews if you don't study for a week."  % (extra_reviews[7].ceil)
 puts "%5d extra reviews if you don't study for a month." % (extra_reviews[30].ceil)
 puts "%5d extra reviews if you don't study for a year."  % (extra_reviews[365].ceil)
+
+puts
+puts "%5d extra facts already forgotten."                        % (facts_forgotten[0].ceil)
+puts "%5d extra facts forgotten if you don't study today."       % (facts_forgotten[1].ceil)
+puts "%5d extra facts forgotten if you don't study for a week."  % (facts_forgotten[7].ceil)
+puts "%5d extra facts forgotten if you don't study for a month." % (facts_forgotten[30].ceil)
+puts "%5d extra facts forgotten if you don't study for a year."  % (facts_forgotten[365].ceil)
