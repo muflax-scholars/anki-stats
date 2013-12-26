@@ -7,7 +7,7 @@ require "muflax"
 require "sqlite3"
 
 opts = Trollop::options do
-  opt :database, "which database to use", :type => :string
+  opt :database, "which database to use", :type => :string, :default => "~/anki/muflax/collection.anki2"
 end
 
 AnkiFile = File.expand_path(opts[:database])
