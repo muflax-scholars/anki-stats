@@ -53,4 +53,6 @@ Now we can show:
 
 This makes it more meaningful to decide whether to study today or not, and what parts.
 
+Using the find_probability.py addon, you can search for cards you have likely forgotten (prob:<50, say) and put them in a filtered deck. This lets you study the *most important* cards, which is typically only a tiny part of a mature card, and so let's you prioritize effectively.
+
 ]
