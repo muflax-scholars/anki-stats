@@ -139,7 +139,7 @@ cards_by_deck.sort.each do |deck, cards|
     when 1 # learning
       learning_cards += 1
     when 2, -2, -3 # review queue or buried
-      Intervals.each do |i, _|
+      (Intervals + [0]).each do |i, _|
         review_cards[i] += 1 if card.due? Today + i
 
         if card.due? Today + i
