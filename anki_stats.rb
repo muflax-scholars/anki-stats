@@ -148,10 +148,10 @@ cards_by_deck.sort.each do |deck, cards|
 
   # show statistics
   puts "#{new_cards} unreviewed, #{learning_cards} in learning queue, #{review_cards[0]} to review, #{review_cards[0] + learning_cards + new_cards} cards total."
-  puts "%.1f min invested, %.1f min wasted, %.1f%% efficiency." % [
+  puts "%.1f min invested, %.1f min wasted, %.1f%% of effort lost." % [
     time_invested,
     time_wasted[0],
-    ((time_invested.to_f - time_wasted[0].to_f) / time_invested.to_f) * 100,
+    (time_wasted[0].to_f / time_invested.to_f) * 100,
   ]
   puts
 
