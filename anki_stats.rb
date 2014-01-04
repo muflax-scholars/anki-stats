@@ -120,7 +120,6 @@ cards_by_deck.sort.each do |deck, cards|
   review_cards   = vivaHash 0
   time_invested  = 0
   time_wasted    = vivaHash 0
-  extra_reviews  = vivaHash 0
 
   puts "#{deck}:"
   cards.each do |card|
@@ -140,7 +139,6 @@ cards_by_deck.sort.each do |deck, cards|
           prob_diff = card.remember_prob(card.due_date) - card.remember_prob(Today + i)
 
           time_wasted[i]     += card.time  * prob_diff
-          extra_reviews[i]   += card.stage * prob_diff
         end
       end
     when -1 # suspended
@@ -150,25 +148,19 @@ cards_by_deck.sort.each do |deck, cards|
 
   # show statistics
   puts "#{new_cards} unreviewed, #{learning_cards} in learning queue, #{review_cards[0]} to review, #{review_cards[0] + learning_cards + new_cards} cards total."
-  puts "%.1f min invested." % time_invested
+  puts "%.1f min invested, %.1f min wasted, %.1f%% efficiency." % [
+    time_invested,
+    time_wasted[0],
+    ((time_invested.to_f - time_wasted[0].to_f) / time_invested.to_f) * 100,
+  ]
   puts
 
-  puts " %6.1f           min already wasted."                        %  time_wasted[0]
   puts "%7.1f (%+7.1f) min wasted if you don't study today."         % [time_wasted[1],
     time_wasted[1]    - time_wasted[0]]
   puts "%7.1f (%+7.1f) min wasted if you don't study for a week."    % [time_wasted[7],
     time_wasted[7]    - time_wasted[0]]
   puts "%7.1f (%+7.1f) min wasted if you don't study for a year."    % [time_wasted[365],
     time_wasted[365]  - time_wasted[0]]
-
-  puts
-  puts " %6.1f           extra reviews already added."                   %  extra_reviews[0]
-  puts "%+7.1f (%+7.1f) extra reviews if you don't study today."         % [extra_reviews[1],
-    extra_reviews[1]    - extra_reviews[0]]
-  puts "%+7.1f (%+7.1f) extra reviews if you don't study for a week."    % [extra_reviews[7],
-    extra_reviews[7]    - extra_reviews[0]]
-  puts "%+7.1f (%+7.1f) extra reviews if you don't study for a year."    % [extra_reviews[365],
-    extra_reviews[365]  - extra_reviews[0]]
 
   puts
 end
