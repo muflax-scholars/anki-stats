@@ -147,20 +147,27 @@ cards_by_deck.sort.each do |deck, cards|
   end
 
   # show statistics
+  effort_wasted = time_wasted[0].to_f / time_invested.to_f
+
   puts "#{new_cards} unreviewed, #{learning_cards} in learning queue, #{review_cards[0]} to review, #{review_cards[0] + learning_cards + new_cards} cards total."
   puts "%.1f min invested, %.1f min wasted, %.1f%% of effort lost." % [
     time_invested,
     time_wasted[0],
-    (time_wasted[0].to_f / time_invested.to_f) * 100,
+    effort_wasted * 100,
   ]
   puts
 
-  puts "%7.1f (%+7.1f) min wasted if you don't study today."         % [time_wasted[1],
-    time_wasted[1]    - time_wasted[0]]
-  puts "%7.1f (%+7.1f) min wasted if you don't study for a week."    % [time_wasted[7],
-    time_wasted[7]    - time_wasted[0]]
-  puts "%7.1f (%+7.1f) min wasted if you don't study for a year."    % [time_wasted[365],
-    time_wasted[365]  - time_wasted[0]]
+  [
+    [1, "today"],
+    [7, "for a week"],
+    [365, "for a year"],
+  ].each do |interval, name|
+    puts "%7.1f min, %+7.1f min, %+5.1f%% of effort wasted if you don't study #{name}." % [
+      time_wasted[interval],
+      time_wasted[interval] - time_wasted[0],
+      ((time_wasted[interval].to_f / time_invested.to_f) - effort_wasted) * 100,
+      ]
+  end
 
   puts
 end
