@@ -165,7 +165,7 @@ cards_by_deck.sort.each do |deck, cards|
     time_wasted[0],
     effort_wasted * 100,
   ]
-  puts "#{forgotten} cards likely forgotten."
+  puts "#{forgotten} (%.1f%%) cards likely forgotten." % ((forgotten.to_f / review_cards[0]) * 100)
   puts
 
   Intervals.each do |interval, name|
