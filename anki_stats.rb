@@ -113,6 +113,13 @@ cards_by_deck = all_cards.group_by(&:deck)
 puts "#{cards_by_deck.size} decks in use."
 puts
 
+Intervals = [
+  [1, "today"],
+  [7, "for a week"],
+  [30, "for a month"],
+  [365, "for a year"],
+]
+
 cards_by_deck.sort.each do |deck, cards|
   # stats
   new_cards      = 0
@@ -132,7 +139,7 @@ cards_by_deck.sort.each do |deck, cards|
     when 1 # learning
       learning_cards += 1
     when 2, -2, -3 # review queue or buried
-      [0, 1, 7, 365].each do |i|
+      Intervals.each do |i, _|
         review_cards[i] += 1 if card.due? Today + i
 
         if card.due? Today + i
@@ -157,14 +164,11 @@ cards_by_deck.sort.each do |deck, cards|
   ]
   puts
 
-  [
-    [1, "today"],
-    [7, "for a week"],
-    [365, "for a year"],
-  ].each do |interval, name|
-    puts "%7.1f min, %+7.1f min, %+5.1f%% of effort wasted if you don't study #{name}." % [
+  Intervals.each do |interval, name|
+    puts "%7.1f min (%+7.1f min), %7.1f%% (%+6.1f%%) of effort wasted if you don't study #{name}." % [
       time_wasted[interval],
       time_wasted[interval] - time_wasted[0],
+      (time_wasted[interval].to_f / time_invested.to_f) * 100,
       ((time_wasted[interval].to_f / time_invested.to_f) - effort_wasted) * 100,
       ]
   end
