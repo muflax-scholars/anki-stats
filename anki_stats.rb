@@ -127,6 +127,7 @@ cards_by_deck.sort.each do |deck, cards|
   review_cards   = vivaHash 0
   time_invested  = 0
   time_wasted    = vivaHash 0
+  forgotten      = 0
 
   puts "#{deck}:"
   cards.each do |card|
@@ -139,6 +140,8 @@ cards_by_deck.sort.each do |deck, cards|
     when 1 # learning
       learning_cards += 1
     when 2, -2, -3 # review queue or buried
+      forgotten += 1 if card.remember_prob(Today) < 0.5
+
       (Intervals + [0]).each do |i, _|
         review_cards[i] += 1 if card.due? Today + i
 
@@ -162,6 +165,7 @@ cards_by_deck.sort.each do |deck, cards|
     time_wasted[0],
     effort_wasted * 100,
   ]
+  puts "#{forgotten} cards likely forgotten."
   puts
 
   Intervals.each do |interval, name|
